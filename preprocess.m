@@ -22,7 +22,7 @@ function outSentence = preprocess( inSentence, language )
     csc401_a2_defns
     
     % first, convert the input sentence to lower-case and add sentence marks 
-    inSentence = [CSC401_A2_DEFNS.SENTSTART ' ' lower(inSentence) ' ' CSC401_A2_DEFNS.SENTEND]
+    inSentence = [CSC401_A2_DEFNS.SENTSTART ' ' lower(inSentence) ' ' CSC401_A2_DEFNS.SENTEND];
 
     % trim whitespaces down 
     inSentence = regexprep(inSentence, '\s+', ' '); 
@@ -31,9 +31,7 @@ function outSentence = preprocess( inSentence, language )
     outSentence = inSentence;
 
     % perform language-agnostic changes
-    % TODO: your code here
-    outSentence = regexprep(outSentence, '[.?,!:;()-+<>="]', ' $& ');
-    outSentence = regexprep(outSentence, '\s+', ' ');
+    outSentence = regexprep(outSentence, '[.?,!:;)(+-<>="]', ' $& ');
     
     switch language
         case 'e'
@@ -50,5 +48,6 @@ function outSentence = preprocess( inSentence, language )
     end
 
     % change unpleasant characters to codes that can be keys in dictionaries
+    outSentence = regexprep(outSentence, '\s+', ' ');
     outSentence = convertSymbols(outSentence);
     cd('../../')
