@@ -1,6 +1,7 @@
 function outSentence = preprocess( inSentence, language )
 %
 %  preprocess
+%  Zi Mo Su 
 %
 %  This function preprocesses the input text according to language-specific rules.
 %  Specifically, we separate contractions according to the source language, convert
@@ -18,6 +19,7 @@ function outSentence = preprocess( inSentence, language )
 %  Template (c) 2011 Frank Rudzicz
 
     global CSC401_A2_DEFNS
+    currDir = cd;
     cd('A2_SMT/code')
     csc401_a2_defns
     
@@ -50,4 +52,4 @@ function outSentence = preprocess( inSentence, language )
     % change unpleasant characters to codes that can be keys in dictionaries
     outSentence = regexprep(outSentence, '\s+', ' ');
     outSentence = convertSymbols(outSentence);
-    cd('../../')
+    cd(currDir)

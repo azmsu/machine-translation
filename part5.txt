@@ -1,0 +1,436 @@
+---------------------------------------------------------------------------
+PART 5: RESULTS AND ANALYSIS
+Zi Mo Su 
+---------------------------------------------------------------------------
+Four different training sets were used for training the alignment model
+with IBM 1. The training sets consisted of 1000, 10k, 15k and 30k sentences
+each. 
+
+A cap of 2 was set in the BLEU calculation.
+
+A delta value of 0.5 was used for smoothing.
+
+The initialization of the probabilities (align_ibm1 subfunction initialize)
+was done such that the initial probabilities for the example below are:
+
+    example sentences:
+        ENGLISH:    'A B C'
+                    'A B'
+        FRENCH:     'X Y Z'
+                    'X Y'
+
+    the probabilities would be:
+        AM.A.X = 0.4
+        AM.A.Y = 0.4
+        AM.A.Z = 0.2
+
+This leads to a better prediction than if it was initialized with 0.33 for
+each of the above.
+
+We observe that for a smaller training set the performance based on BLEU is
+worse than for larger sets. This makes sense because having less words to
+train with results in missing words in our translation. 
+
+A lot of the BLEU scores are the same for sets 10k, 15k and 30k sentences 
+in length. This makes sense because the training set will experience a 
+smaller change as it grows since the vocabulary of the set is capped; in 
+other words, training with 1000 sentences results in n words seen. Then 
+training with 10k will result in n+e words seen where e < n. As we grow 
+even more to 15k or 30k, we will see n+e+f words where f << n. So the
+growth in words seen is decreasing.
+
+We see that in terms of BLEU scores, some of the test sentences will have 0
+for n=3. This is not surprising as it is much harder to get trigrams,
+especially if the sentence is short.
+
+To improve our results, we can train on a larger set of sentences. This may
+result in overfitting, but since our training and test set are from the
+same dataset, it will be less of a problem. We could also evaluate our
+performance with more references. This will return better results in
+general, and no change at the minimum because we will retain the original
+two references.
+
+Since our data is from Hansard, there may be regularities that are present
+in Hansard only which would entail a good translation if the desired output
+is of Hansard 'style' but perhaps a poorer translation if the desired
+output is more general.
+
+
+---------------------------------------------------------------------------
+EXECUTION OF evalAlign:
+---------------------------------------------------------------------------
+
+Ref (Google)  : SENTSTART in the real world COMMA_ there is nothing wrong with that PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART in the real world there is nothing wrong with that PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited in the world edited COMMA_ it not there to nothing of system to way PERIOD_ edited
+     BLEU     n=1: 0.5     n=2: 0.19612     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited in the world name COMMA_ it not there to nothing of wrong to that PERIOD_ edited
+     BLEU     n=1: 0.64286     n=2: 0.31449     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited in the world real COMMA_ it not there to nothing of wrong to that PERIOD_ edited
+     BLEU     n=1: 0.71429     n=2: 0.3315     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited in the world real COMMA_ it not there to nothing of wrong to that PERIOD_ edited
+     BLEU     n=1: 0.71429     n=2: 0.3315     n=3: 0
+ 
+Ref (Google)  : SENTSTART this applies to all deputies PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART that is true for every member of parliament PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited way edited for all are members PERIOD_ edited
+     BLEU     n=1: 0.32206     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited that worth for all are members PERIOD_ edited
+     BLEU     n=1: 0.42942     n=2: 0     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited that worth for all the members PERIOD_ edited
+     BLEU     n=1: 0.42942     n=2: 0     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited that worth for all the members PERIOD_ edited
+     BLEU     n=1: 0.42942     n=2: 0     n=3: 0
+ 
+Ref (Google)  : SENTSTART i do not think it SINGQUOTE_s our goal PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART i would think this is not at all what we want to do here PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited i not form not that this her the our plan PERIOD_ edited
+     BLEU     n=1: 0.41709     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited i not think not that this want the our objective PERIOD_ edited
+     BLEU     n=1: 0.55612     n=2: 0.20725     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited i not think not that this senate the our objective PERIOD_ edited
+     BLEU     n=1: 0.4866     n=2: 0.19387     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited i not think not that this amended the our objective PERIOD_ edited
+     BLEU     n=1: 0.4866     n=2: 0.19387     n=3: 0
+ 
+Ref (Google)  : SENTSTART all those in favor will please say yea PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART all those in favour of the motion will please say yea PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited that all represent who terms the motion edited well means yes PERIOD_ edited
+     BLEU     n=1: 0.33333     n=2: 0.17408     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited that all those who terms the motion please well say yes PERIOD_ edited
+     BLEU     n=1: 0.58333     n=2: 0.32567     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited that all those who terms the motion please well say yes PERIOD_ edited
+     BLEU     n=1: 0.58333     n=2: 0.32567     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited that all those who support the motion please well say yes PERIOD_ edited
+     BLEU     n=1: 0.58333     n=2: 0.32567     n=3: 0
+ 
+Ref (Google)  : SENTSTART the good news is that canada post is all ears PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART the good news is that canada post is listening PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited the edited new is that edited canada is all edited PERIOD_ edited
+     BLEU     n=1: 0.875     n=2: 0.5     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited the good new is that post canada is all edited PERIOD_ edited
+     BLEU     n=1: 0.9     n=2: 0.54772     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited the good new is that post canada is all beats PERIOD_ edited
+     BLEU     n=1: 0.9     n=2: 0.54772     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited the good new is that post canada is all beats PERIOD_ edited
+     BLEU     n=1: 0.9     n=2: 0.54772     n=3: 0
+ 
+Ref (Google)  : SENTSTART the question arises COMMA_ why QUESTION_ SENTEND
+Ref (Hansard) : SENTSTART we have to ask why PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited the question some clear believe COMMA_ why QUESTION_ edited
+     BLEU     n=1: 0.625     n=2: 0.51755     n=3: 0.35475
+Using 10000 training sentences: 
+     Cadidate: edited the question happen questions therefore COMMA_ why QUESTION_ edited
+     BLEU     n=1: 0.625     n=2: 0.51755     n=3: 0.35475
+Using 15000 training sentences: 
+     Cadidate: edited the question happen question therefore COMMA_ why QUESTION_ edited
+     BLEU     n=1: 0.85714     n=2: 0.65465     n=3: 0.44091
+Using 30000 training sentences: 
+     Cadidate: edited the question going ask therefore COMMA_ why QUESTION_ edited
+     BLEU     n=1: 0.75     n=2: 0.56695     n=3: 0.37697
+ 
+Ref (Google)  : SENTSTART the liberal deputies are many represent a rural constituency PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART many liberal members come from rural ridings PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited are members liberals are suggestions to representing of riding edited PERIOD_ edited
+     BLEU     n=1: 0.4     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited are members liberals are many to represent of riding rural PERIOD_ edited
+     BLEU     n=1: 0.7     n=2: 0.27889     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited the members liberals are many to represent of riding rural PERIOD_ edited
+     BLEU     n=1: 0.63636     n=2: 0.25226     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited the members liberals are many to represent of riding rural PERIOD_ edited
+     BLEU     n=1: 0.63636     n=2: 0.25226     n=3: 0
+ 
+Ref (Google)  : SENTSTART we live in a democracy PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART we live in a democracy PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited we edited in a edited PERIOD_ edited
+     BLEU     n=1: 0.8     n=2: 0.44721     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited we exciting in a democracy PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.70711     n=3: 0.62996
+Using 15000 training sentences: 
+     Cadidate: edited we respect in a democracy PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.70711     n=3: 0.62996
+Using 30000 training sentences: 
+     Cadidate: edited we live in a democracy PERIOD_ edited
+     BLEU     n=1: 1     n=2: 1     n=3: 1
+ 
+Ref (Google)  : SENTSTART it is the height of ridicule SENTEND
+Ref (Hansard) : SENTSTART i cannot imagine anything so ridiculous PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited is is the edited of ridiculous edited
+     BLEU     n=1: 0.84648     n=2: 0.42324     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited is is the edited of ridiculous edited
+     BLEU     n=1: 0.84648     n=2: 0.42324     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited is is the motivation of ridiculous edited
+     BLEU     n=1: 0.84648     n=2: 0.42324     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited is is the requires of ridiculous edited
+     BLEU     n=1: 0.84648     n=2: 0.42324     n=3: 0
+ 
+Ref (Google)  : SENTSTART in my opinion COMMA_ the nays SENTEND
+Ref (Hansard) : SENTSTART in my opinion the nays have it PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited to my agree COMMA_ are amendments the edited edited
+     BLEU     n=1: 0.375     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited to my opinion COMMA_ are no of yeas edited
+     BLEU     n=1: 0.375     n=2: 0.32733     n=3: 0.26138
+Using 15000 training sentences: 
+     Cadidate: edited to my opinion COMMA_ the no of yeas edited
+     BLEU     n=1: 0.5     n=2: 0.46291     n=3: 0.41491
+Using 30000 training sentences: 
+     Cadidate: edited to my opinion COMMA_ the no hon yeas edited
+     BLEU     n=1: 0.5     n=2: 0.46291     n=3: 0.41491
+ 
+Ref (Google)  : SENTSTART all mps from all parties are familiar with these programs SENTEND
+Ref (Hansard) : SENTSTART all members of all parties are aware of these programs PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited all are members of all are parties figures well these programs edited
+     BLEU     n=1: 1     n=2: 0.61237     n=3: 0.37697
+Using 10000 training sentences: 
+     Cadidate: edited all are members of all are parties throw well these programs edited
+     BLEU     n=1: 1     n=2: 0.61237     n=3: 0.37697
+Using 15000 training sentences: 
+     Cadidate: edited all the members of all the parties familiar well these programs edited
+     BLEU     n=1: 0.88889     n=2: 0.57735     n=3: 0.36246
+Using 30000 training sentences: 
+     Cadidate: edited all the members of all the parties familiar well these programs edited
+     BLEU     n=1: 0.88889     n=2: 0.57735     n=3: 0.36246
+ 
+Ref (Google)  : SENTSTART we do not intend to terminate it PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART we do not intend to stop that PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited we not have not the edited of work left to way PERIOD_ edited
+     BLEU     n=1: 0.45455     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited we not we not of intend of put end to that PERIOD_ edited
+     BLEU     n=1: 0.88889     n=2: 0.33333     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited we not we not of so of put end to that PERIOD_ edited
+     BLEU     n=1: 0.77778     n=2: 0.3118     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited we not we not hon honourable of put end to that PERIOD_ edited
+     BLEU     n=1: 0.7     n=2: 0.27889     n=3: 0
+ 
+Ref (Google)  : SENTSTART let us try to honor our kyoto commitments PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART let us meet our kyoto commitments PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited edited be edited our edited of edited PERIOD_ edited
+     BLEU     n=1: 0.353     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited edited a edited our commitments of edited PERIOD_ edited
+     BLEU     n=1: 0.44125     n=2: 0     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited edited a edited our commitments of edited PERIOD_ edited
+     BLEU     n=1: 0.44125     n=2: 0     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited edited a trying our commitments of kyoto PERIOD_ edited
+     BLEU     n=1: 0.44125     n=2: 0     n=3: 0
+ 
+Ref (Google)  : SENTSTART the finance minister saber vengeance in transfers to the provinces PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART the minister of finance has made deep cuts to provincial transfers PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited the minister of finance to edited to next of edited in are edited needs provinces PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.55048     n=3: 0.3928
+Using 10000 training sentences: 
+     Cadidate: edited the minister of finance to gut to next of SINGQUOTE_or in are transfers division provinces PERIOD_ edited
+     BLEU     n=1: 0.78571     n=2: 0.49169     n=3: 0.34283
+Using 15000 training sentences: 
+     Cadidate: edited the minister of finance to gut to turn of SINGQUOTE_or in the transfers following provinces PERIOD_ edited
+     BLEU     n=1: 0.92308     n=2: 0.5547     n=3: 0.38246
+Using 30000 training sentences: 
+     Cadidate: edited the minister of finance to gut to turn of SINGQUOTE_or in the transfers to provinces PERIOD_ edited
+     BLEU     n=1: 1     n=2: 0.6742     n=3: 0.44964
+ 
+Ref (Google)  : SENTSTART but let SINGQUOTE_s leave that and move into the heart of the debate PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART let us get on with it and continue to engage in debate PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited but edited way and edited in the bottom of debate PERIOD_ edited
+     BLEU     n=1: 0.53291     n=2: 0.21232     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited but set that and rather in the heart of debate PERIOD_ edited
+     BLEU     n=1: 0.62288     n=2: 0.43552     n=3: 0.25222
+Using 15000 training sentences: 
+     Cadidate: edited but let that and rather in the heart of debate PERIOD_ edited
+     BLEU     n=1: 0.69209     n=2: 0.51327     n=3: 0.28141
+Using 30000 training sentences: 
+     Cadidate: edited but let that and substance in the heart of debate PERIOD_ edited
+     BLEU     n=1: 0.69209     n=2: 0.51327     n=3: 0.28141
+ 
+Ref (Google)  : SENTSTART we believe it is possible to do better PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART we are suggesting that we could pass a better bill PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited we edited does it is makes of do able PERIOD_ edited
+     BLEU     n=1: 0.45242     n=2: 0.21327     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited we passed what it is possible of do better PERIOD_ edited
+     BLEU     n=1: 0.63339     n=2: 0.50469     n=3: 0.38624
+Using 15000 training sentences: 
+     Cadidate: edited we passed what it is possible of do better PERIOD_ edited
+     BLEU     n=1: 0.63339     n=2: 0.50469     n=3: 0.38624
+Using 30000 training sentences: 
+     Cadidate: edited we important what it is possible of do better PERIOD_ edited
+     BLEU     n=1: 0.63339     n=2: 0.50469     n=3: 0.38624
+ 
+Ref (Google)  : SENTSTART this is the style liberal PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART this is reminiscent of the liberal way of doing things PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited is is the more edited rhetoric liberal PERIOD_ edited
+     BLEU     n=1: 0.49092     n=2: 0.33536     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited is is the more edited improving liberal PERIOD_ edited
+     BLEU     n=1: 0.49092     n=2: 0.33536     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited is is the more tactics imagery liberal PERIOD_ edited
+     BLEU     n=1: 0.49092     n=2: 0.33536     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited is is the more whimsy style liberal PERIOD_ edited
+     BLEU     n=1: 0.58911     n=2: 0.44994     n=3: 0.30303
+ 
+Ref (Google)  : SENTSTART we SINGQUOTE_m back there COMMA_ and the prime minister will determine who is the chairman of the board PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART the prime minister will determine who the president of the council will be PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited we there edited COMMA_ and the prime minister forward situations who is the speaker of offer PERIOD_ edited
+     BLEU     n=1: 0.66676     n=2: 0.48693     n=3: 0.39197
+Using 10000 training sentences: 
+     Cadidate: edited we there edited COMMA_ and the prime minister going market who is the speaker of council PERIOD_ edited
+     BLEU     n=1: 0.72232     n=2: 0.50681     n=3: 0.40257
+Using 15000 training sentences: 
+     Cadidate: edited we there edited COMMA_ and the prime minister going determine who is the speaker of treasury PERIOD_ edited
+     BLEU     n=1: 0.72232     n=2: 0.54742     n=3: 0.45652
+Using 30000 training sentences: 
+     Cadidate: edited we there edited COMMA_ and the prime minister will determine who is the speaker of council PERIOD_ edited
+     BLEU     n=1: 0.83345     n=2: 0.66676     n=3: 0.60898
+ 
+Ref (Google)  : SENTSTART clearly this would be a conflict of interest PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART clearly it is a conflict of interest situation PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited it is edited that way edited a edited be interest PERIOD_ edited
+     BLEU     n=1: 0.66667     n=2: 0.40825     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited it is clear that that edited a edited a interests PERIOD_ edited
+     BLEU     n=1: 0.625     n=2: 0.29881     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited it is clear that that edited a edited a interests PERIOD_ edited
+     BLEU     n=1: 0.625     n=2: 0.29881     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited it is clear that that signal a edited a interests PERIOD_ edited
+     BLEU     n=1: 0.55556     n=2: 0.26352     n=3: 0
+ 
+Ref (Google)  : SENTSTART we are looking forward to these new opportunities PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART we welcome the opportunity PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited we we solid of these news edited PERIOD_ edited
+     BLEU     n=1: 0.50428     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited we we celebrate of these new opportunities PERIOD_ edited
+     BLEU     n=1: 0.75643     n=2: 0.57773     n=3: 0.49024
+Using 15000 training sentences: 
+     Cadidate: edited we we celebrating of these new opportunities PERIOD_ edited
+     BLEU     n=1: 0.75643     n=2: 0.57773     n=3: 0.49024
+Using 30000 training sentences: 
+     Cadidate: edited we we celebrating of these new opportunities PERIOD_ edited
+     BLEU     n=1: 0.75643     n=2: 0.57773     n=3: 0.49024
+ 
+Ref (Google)  : SENTSTART i declare the motion rejected PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART i declare the motion lost PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited i beginning the motion edited PERIOD_ edited
+     BLEU     n=1: 0.66667     n=2: 0.36515     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited i declare the motion defeated PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.70711     n=3: 0.62996
+Using 15000 training sentences: 
+     Cadidate: edited i declare the motion negatived PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.70711     n=3: 0.62996
+Using 30000 training sentences: 
+     Cadidate: edited i declare the motion negatived PERIOD_ edited
+     BLEU     n=1: 0.83333     n=2: 0.70711     n=3: 0.62996
+ 
+Ref (Google)  : SENTSTART and more than five deputies are being leves COLON_ SENTEND
+Ref (Hansard) : SENTSTART and more than five members having risen COLON_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited and more of five members my being edited COLON_ edited
+     BLEU     n=1: 0.66667     n=2: 0.40825     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited and more of five members my having risen COLON_ edited
+     BLEU     n=1: 0.77778     n=2: 0.62361     n=3: 0.38157
+Using 15000 training sentences: 
+     Cadidate: edited and more of five members my having risen COLON_ edited
+     BLEU     n=1: 0.77778     n=2: 0.62361     n=3: 0.38157
+Using 30000 training sentences: 
+     Cadidate: edited and more of five members my having risen COLON_ edited
+     BLEU     n=1: 0.77778     n=2: 0.62361     n=3: 0.38157
+ 
+Ref (Google)  : SENTSTART i do not think this is the solution of the problem PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART i do not think a union is the key to solving the problem PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited i not think not that this her the own of problem PERIOD_ edited
+     BLEU     n=1: 0.69258     n=2: 0.34242     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited i not think not that this want the solution of problem PERIOD_ edited
+     BLEU     n=1: 0.76953     n=2: 0.51045     n=3: 0.29046
+Using 15000 training sentences: 
+     Cadidate: edited i not think not that this senate the solution of problem PERIOD_ edited
+     BLEU     n=1: 0.76953     n=2: 0.51045     n=3: 0.29046
+Using 30000 training sentences: 
+     Cadidate: edited i not think not that this amended the solution of problem PERIOD_ edited
+     BLEU     n=1: 0.76953     n=2: 0.51045     n=3: 0.29046
+ 
+Ref (Google)  : SENTSTART i congratulate the mp for winnipeg centre have presented the bill PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART i commend the member for winnipeg centre for bringing forward this bill PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited i congratulate the member of winnipeg DASH_ centre be please held this bill of bill PERIOD_ edited
+     BLEU     n=1: 0.71429     n=2: 0.52414     n=3: 0.27647
+Using 10000 training sentences: 
+     Cadidate: edited i commend the member of winnipeg DASH_ centre a leave presented this bill of bill PERIOD_ edited
+     BLEU     n=1: 0.78571     n=2: 0.54973     n=3: 0.35958
+Using 15000 training sentences: 
+     Cadidate: edited i commend the member of winnipeg DASH_ centre a get presented this bill of bill PERIOD_ edited
+     BLEU     n=1: 0.78571     n=2: 0.54973     n=3: 0.35958
+Using 30000 training sentences: 
+     Cadidate: edited i congratulate the member of winnipeg DASH_ centre a honourable present this bill of bill PERIOD_ edited
+     BLEU     n=1: 0.71429     n=2: 0.52414     n=3: 0.27647
+ 
+Ref (Google)  : SENTSTART it has to change PERIOD_ SENTEND
+Ref (Hansard) : SENTSTART something has to change PERIOD_ SENTEND
+Using 1000 training sentences: 
+     Cadidate: edited it those that leave changed PERIOD_ edited
+     BLEU     n=1: 0.33333     n=2: 0     n=3: 0
+Using 10000 training sentences: 
+     Cadidate: edited it must that way changed PERIOD_ edited
+     BLEU     n=1: 0.33333     n=2: 0     n=3: 0
+Using 15000 training sentences: 
+     Cadidate: edited it must that that changed PERIOD_ edited
+     BLEU     n=1: 0.4     n=2: 0     n=3: 0
+Using 30000 training sentences: 
+     Cadidate: edited it must that that changed PERIOD_ edited
+     BLEU     n=1: 0.4     n=2: 0     n=3: 0

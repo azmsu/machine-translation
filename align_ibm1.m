@@ -1,6 +1,7 @@
 function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
 %
 %  align_ibm1
+%  Zi Mo Su
 % 
 %  This function implements the training of the IBM-1 word alignment algorithm. 
 %  We assume that we are implementing P(foreign|english)
@@ -58,18 +59,14 @@ function AM = align_ibm1(trainDir, numSentences, maxIter, fn_AM)
     % Save the alignment model
     save( fn_AM, 'AM', '-mat'); 
 
-  end
+end
 
-
-
-
-
+  
 % --------------------------------------------------------------------------------
 % 
 %  Support functions
 %
 % --------------------------------------------------------------------------------
-
 function [eng, fre] = read_hansard(dataDir, numSentences)
 %
 % Read 'numSentences' parallel sentences from texts in the 'dir' directory.
@@ -152,11 +149,11 @@ function AM = initialize(eng, fre)
     
 end
 
+
 function t = em_step(t, eng, fre, tc, tot)
 % 
 % One step in the EM algorithm.
 %   
-
     % initialize tcount and total structures with all zeros
     tcount = struct(tc);
     total = struct(tot);
@@ -199,5 +196,4 @@ function t = em_step(t, eng, fre, tc, tot)
     end
     
 end
-
 

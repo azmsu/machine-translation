@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+PART 3: RESULTS AND ANALYSIS
+Zi Mo Su 
+---------------------------------------------------------------------------
+The perplexity for different values of delta was calculated. The values
+used were delta = 0.0, 0.2, 0.4, 0.6, 0.8 and 1.0.
+
+We observe that the perplexity increases as delta increases. This is
+expected, as the delta value gives weight to unseen words, which would
+entail a probability for words that used to have -Inf as their logProb.
+Since for no smoothing, we dismiss any words with -Inf lopProb, these
+contribute 0 to the perplexity, hence the low result.
+
+
+---------------------------------------------------------------------------
+EXECUTION OF evalPerplexity:
+---------------------------------------------------------------------------
+
+For no smoothing:
+    English : 14.054
+    French  : 13.5828
+For delta=0.2:
+    English : 64.3822
+    French  : 68.7289
+For delta=0.4:
+    English : 80.7107
+    French  : 88.3352
+For delta=0.6:
+    English : 93.9883
+    French  : 104.5105
+For delta=0.8:
+    English : 105.6621
+    French  : 118.8954
+For delta=1.0:
+    English : 116.2994
+    French  : 132.1233

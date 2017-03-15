@@ -1,6 +1,7 @@
 function LM = lm_train(dataDir, language, fn_LM)
 %
 %  lm_train
+%  Zi Mo Su
 % 
 %  This function reads data from dataDir, computes unigram and bigram counts,
 %  and writes the result to fn_LM
@@ -61,7 +62,6 @@ function LM = lm_train(dataDir, language, fn_LM)
                     
                 else
                     LM.uni.(first_word) = 1;
-%                     LM.bi.(first_word) = struct();
                     LM.bi.(first_word).(second_word) = 1; 
                 end
             end

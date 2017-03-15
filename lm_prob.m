@@ -1,6 +1,7 @@
 function logProb = lm_prob(sentence, LM, type, delta, vocabSize)
 %
 %  lm_prob
+%  Zi Mo Su
 % 
 %  This function computes the LOG probability of a sentence, given a 
 %  language model and whether or not to apply add-delta smoothing

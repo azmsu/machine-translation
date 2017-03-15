@@ -1,6 +1,7 @@
 function pp = perplexity( LM, testDir, language, type, delta )
 %
 %  perplexity
+%  Zi Mo Su
 % 
 %  This function computes the perplexity of language model given a test corpus 
 %
